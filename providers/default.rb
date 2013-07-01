@@ -29,12 +29,26 @@ action :create do
   if download
     body = S3FileLib::get_from_s3(new_resource.bucket, remote_path, new_resource.aws_access_key_id, new_resource.aws_secret_access_key).body
 
-    file new_resource.path do
-      owner new_resource.owner if new_resource.owner
-      group new_resource.group if new_resource.group
-      mode new_resource.mode if new_resource.mode
-      action :create
-      content body
+    if Chef::Platform.windows?
+      file new_resource.path do
+        owner new_resource.owner if new_resource.owner
+        group new_resource.group if new_resource.group
+        mode new_resource.mode if new_resource.mode
+        #rights new_resource.rights if new_resource.rights
+        action :create
+      end
+      f = ::File.open(new_resource.path, "w")
+      f.binmode
+      f.write body
+      f.close
+    else
+      file new_resource.path do
+        owner new_resource.owner if new_resource.owner
+        group new_resource.group if new_resource.group
+        mode new_resource.mode if new_resource.mode
+        action :create
+        content body
+      end
     end
   end
 end

@@ -7,6 +7,7 @@ attribute :aws_secret_access_key, :kind_of => String
 attribute :owner, :kind_of => [String, NilClass], :default => nil
 attribute :group, :kind_of => [String, NilClass], :default => nil
 attribute :mode, :kind_of => [String, NilClass], :default => nil
+attribute :rights, :kind_of => [Array], :default => nil
 
 def initialize(*args)
   super
